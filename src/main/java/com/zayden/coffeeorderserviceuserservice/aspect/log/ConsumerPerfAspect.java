@@ -19,15 +19,15 @@ import java.lang.reflect.Method;
 @Slf4j
 @Component
 @Aspect
-public class ConsumerPerAspect {
-    @Before("execution(* com.zayden.userservice.messagequeue.consumer.*.*(..)))")
+public class ConsumerPerfAspect {
+    @Before("execution(* com.zayden.coffeeorderserviceuserservice.messagequeue.consumer.*.*(..)))")
     public void before(JoinPoint joinPoint){
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
         message("Before", method.getName());
     }
 
-    @After("execution(* com.zayden.userservice.messagequeue.consumer.*.*(..)))")
+    @After("execution(* com.zayden.coffeeorderserviceuserservice.messagequeue.consumer.*.*(..)))")
     public void after(JoinPoint joinPoint){
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();

@@ -1,10 +1,11 @@
-package com.zayden.coffeeorderserviceuserservice.controller;
+package com.zayden.coffeeorderserviceuserservice.api;
 
 
-import com.zayden.userservice.dto.PaypointDto;
-import com.zayden.userservice.service.pointservice.PointService;
-import com.zayden.userservice.vo.RequestPoint;
-import com.zayden.userservice.vo.ResponsePoint;
+import com.zayden.coffeeorderserviceuserservice.dto.PayPointStatus;
+import com.zayden.coffeeorderserviceuserservice.dto.PaypointDto;
+import com.zayden.coffeeorderserviceuserservice.service.pointservice.PointService;
+import com.zayden.coffeeorderserviceuserservice.vo.RequestPoint;
+import com.zayden.coffeeorderserviceuserservice.vo.ResponsePoint;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,8 +18,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/point")
 public class PointController {
-    private static final String logMessageGET = "GET";
-    private static final String logMessagePOST = "POST";
+    private static final PayPointStatus PENDING = PayPointStatus.PENDING;
+    private static final PayPointStatus LOOKUP = PayPointStatus.LOOKUP;
+
     private final PointService pointService;
 
     /*
@@ -31,9 +33,16 @@ public class PointController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsePoint);
         }
 
-        PaypointDto paypointDto = pointService.setPaypointDtoByRequsetPoint(
-                requestPoint, logMessagePOST
-        );
+        PaypointDto paypointDto = PaypointDto.builder()
+                .userId(requestPoint.getUserId())
+                .amount(requestPoint.getAmount())
+                .build();
+        paypointDto.createPayId();
+        paypointDto.setPayStatusName(PENDING);
+
+        if(pointService.isUserId(paypointDto, LOOKUP)){
+            pointService.sendKafkaToPayService(paypointDto, PENDING);
+        }
 
         ResponsePoint responsePoint = ResponsePoint.builder()
                 .userId(paypointDto.getUserId())
@@ -52,13 +61,19 @@ public class PointController {
             ResponsePoint responsePoint = ResponsePoint.builder().build();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsePoint);
         }
-        int amount = pointService.getUserPointByUserId(requestPoint, logMessageGET);
+        PaypointDto paypointDto = PaypointDto.builder()
+                .userId(requestPoint.getUserId())
+                .build();
+        paypointDto.createPayId();
+        paypointDto.setPayStatusName(LOOKUP);
+
+        int amount = pointService.getUserPointByUserId(paypointDto, LOOKUP);
 
         ResponsePoint responsePoint = ResponsePoint.builder()
-                .userId(requestPoint.getUserId())
+                .userId(paypointDto.getUserId())
                 .amount(amount)
                 .build();
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(responsePoint);
+        return ResponseEntity.status(HttpStatus.OK).body(responsePoint);
     }
 }

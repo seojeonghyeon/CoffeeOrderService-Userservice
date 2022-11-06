@@ -11,9 +11,9 @@ public class PaypointDto {
     private String payId;
     private String userId;
     private Integer amount;
-    private String payStatus;
+    private PayPointStatus payStatus;
 
-    public void setPayStatusName(String payStatus){
+    public void setPayStatusName(PayPointStatus payStatus){
         this.payStatus = payStatus;
     }
     public void createPayId(){

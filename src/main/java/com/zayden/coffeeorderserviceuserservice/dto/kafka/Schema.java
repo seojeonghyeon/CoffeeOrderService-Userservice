@@ -1,7 +1,7 @@
 package com.zayden.coffeeorderserviceuserservice.dto.kafka;
 
 
-import com.zayden.userservice.dto.kafka.Field;
+import com.zayden.coffeeorderserviceuserservice.dto.kafka.Field;
 import lombok.Builder;
 import lombok.Data;
 

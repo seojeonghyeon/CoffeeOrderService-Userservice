@@ -19,14 +19,14 @@ import java.lang.reflect.Method;
 @Aspect
 public class ControllerPerfAspect {
 
-    @Before("execution(* com.zayden.userservice.controller.*.*(..)))")
+    @Before("execution(* com.zayden.coffeeorderserviceuserservice.api.*.*(..)))")
     public void before(JoinPoint joinPoint){
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
         message("Before", method.getName());
     }
 
-    @After("execution(* com.zayden.userservice.controller.*.*(..)))")
+    @After("execution(* com.zayden.coffeeorderserviceuserservice.api.*.*(..)))")
     public void after(JoinPoint joinPoint){
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();

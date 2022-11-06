@@ -1,10 +1,11 @@
 package com.zayden.coffeeorderserviceuserservice.service.pointservice;
 
-import com.zayden.userservice.dto.PaypointDto;
-import com.zayden.userservice.vo.RequestPoint;
+import com.zayden.coffeeorderserviceuserservice.dto.PayPointStatus;
+import com.zayden.coffeeorderserviceuserservice.dto.PaypointDto;
 
 public interface PointService {
-    void updateUserPoint(PaypointDto paypointDto, String logMessage);
-    int getUserPointByUserId(RequestPoint requestPoint, String logMessage);
-    PaypointDto setPaypointDtoByRequsetPoint(RequestPoint requestPoint, String logMessage);
+    void updateUserPoint(PaypointDto paypointDto, PayPointStatus payPointStatus);
+    int getUserPointByUserId(PaypointDto paypointDto, PayPointStatus payPointStatus);
+    boolean isUserId(PaypointDto paypointDto, PayPointStatus payPointStatus);
+    void sendKafkaToPayService(PaypointDto paypointDto, PayPointStatus payPointStatus);
 }

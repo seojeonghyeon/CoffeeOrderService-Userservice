@@ -1,42 +1,42 @@
 package com.zayden.coffeeorderserviceuserservice.aspect.kafka;
 
-import com.zayden.userservice.dto.UserPointDto;
-import com.zayden.userservice.messagequeue.producer.UserPointProducer;
+import com.zayden.coffeeorderserviceuserservice.dto.KafkaTopic;
+import com.zayden.coffeeorderserviceuserservice.dto.PaypointDto;
+import com.zayden.coffeeorderserviceuserservice.dto.UserPointDto;
+import com.zayden.coffeeorderserviceuserservice.messagequeue.producer.UserPointProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @RequiredArgsConstructor
 @Component
 @Aspect
-@EnableAspectJAutoProxy(proxyTargetClass = true)
 public class SendKafkaToDBForUpdateUserPointAspect {
     private final UserPointProducer userPointProducer;
-    private static final String kafkaTopicName= "kafka.topics.user-to-db-for-point";
-    private String logMessage;
 
-    @Before("@annotation(com.zayden.userservice.annotation.SendKafkaToDBForUpdateUserPointMessage)")
+    private PaypointDto paypointDto;
+    private KafkaTopic kafkaTopic;
+    private UserPointDto userPointDto;
+
+    @Before("@annotation(com.zayden.coffeeorderserviceuserservice.annotation.SendKafkaToDBForUpdateUserPointMessage)")
     public void after(JoinPoint joinPoint){
-        Object[] args = joinPoint.getArgs();
-        UserPointDto userPointDto = (UserPointDto) args[0];
-        this.logMessage = (String) args[1];
-        userPointProducer.send(kafkaTopicName, userPointDto);
-        log.info("AFTER THE KAFKA SEND : "+ setLogMessage(kafkaTopicName, userPointDto));
-    }
+        Object[] outerArgs = joinPoint.getArgs();
 
-    private String setLogMessage(String kafkaTopicName, UserPointDto userPointDto){
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(kafkaTopicName);
-        stringBuilder.append("[");
-        stringBuilder.append(userPointDto.getUserId());
-        stringBuilder.append(" ] ");
-        stringBuilder.append(" : ");
-        stringBuilder.append(userPointDto.getAmount()+" "+logMessage);
-        return stringBuilder.toString();
+        JoinPoint innerJointPoint = (JoinPoint) outerArgs[0];
+        Object[] innerArgs = innerJointPoint.getArgs();
+
+        this.paypointDto = (PaypointDto) innerArgs[0];
+        this.kafkaTopic = (KafkaTopic) outerArgs[1];
+
+        userPointDto = UserPointDto.builder()
+                .userId(paypointDto.getUserId())
+                .amount(paypointDto.getAmount())
+                .build();
+
+        userPointProducer.send(kafkaTopic.getKafkaTopic(), userPointDto);
     }
 }

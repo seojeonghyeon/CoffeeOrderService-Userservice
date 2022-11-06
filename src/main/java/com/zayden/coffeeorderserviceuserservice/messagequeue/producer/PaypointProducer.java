@@ -1,11 +1,11 @@
 package com.zayden.coffeeorderserviceuserservice.messagequeue.producer;
 
-import com.zayden.userservice.dto.*;
-import com.zayden.userservice.dto.kafka.Field;
-import com.zayden.userservice.dto.kafka.KafkaPaypointDto;
-import com.zayden.userservice.dto.kafka.PayloadPaypoint;
-import com.zayden.userservice.dto.kafka.Schema;
-import com.zayden.userservice.messagequeue.config.KafkaProducer;
+import com.zayden.coffeeorderserviceuserservice.dto.*;
+import com.zayden.coffeeorderserviceuserservice.dto.kafka.Field;
+import com.zayden.coffeeorderserviceuserservice.dto.kafka.KafkaPaypointDto;
+import com.zayden.coffeeorderserviceuserservice.dto.kafka.PayloadPaypoint;
+import com.zayden.coffeeorderserviceuserservice.dto.kafka.Schema;
+import com.zayden.coffeeorderserviceuserservice.messagequeue.config.KafkaProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
