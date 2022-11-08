@@ -1,10 +1,14 @@
 package com.zayden.coffeeorderserviceuserservice.jpa;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.zayden.coffeeorderserviceuserservice.dto.PayPointStatus;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.Date;
+
+import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
@@ -19,7 +23,7 @@ public class LogPaypointEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 120, unique = true)
+    @Column(nullable = false, length = 120)
     private String payId;
 
     @Column(nullable = false)
@@ -28,10 +32,11 @@ public class LogPaypointEntity {
     @Column(nullable = false)
     private int amount;
 
-    @Column(nullable = false)
-    private String payStatus;
+    @Enumerated(EnumType.STRING)
+    private PayPointStatus payPointStatus;
 
     @Column(nullable = false, updatable = false, insertable = false)
     @ColumnDefault(value="CURRENT_TIMESTAMP")
     private Date createAt;
+
 }

@@ -29,12 +29,15 @@ public class SendKafkaAspect {
         this.payPointStatus = (PayPointStatus) args[1];
         KafkaTopicGroup kafkaTopicGroup = KafkaTopicGroup.findByPayPointStatus(payPointStatus);
         List<KafkaTopic> kafkaTopicList = kafkaTopicGroup.getKafkaTopicList();
-        for (KafkaTopic kafkaTopic : kafkaTopicList) {
-            if(kafkaTopic == KafkaTopic.DATABASESTOLOG){
-                sendKafka.SendKafkaToDBForLog(joinPoint, kafkaTopic.getKafkaTopic());
-            }else if(kafkaTopic == KafkaTopic.DATABASESTOPOINTSTATUS){
-                sendKafka.SendKafkaToDBForUpdateUserPoint(joinPoint, kafkaTopic.getKafkaTopic());
-            }
+        kafkaTopicList.stream().forEach(kafkaTopic -> branchKafkaTopic(kafkaTopic, joinPoint));
+    }
+
+    private void branchKafkaTopic(KafkaTopic kafkaTopic, JoinPoint joinPoint){
+        if(kafkaTopic == KafkaTopic.DATABASESTOLOG) {
+            sendKafka.SendKafkaToDBForLog(joinPoint, kafkaTopic.getKafkaTopic());
+        }
+        else if(kafkaTopic == KafkaTopic.DATABASESTOPOINTSTATUS) {
+            sendKafka.SendKafkaToDBForUpdateUserPoint(joinPoint, kafkaTopic.getKafkaTopic());
         }
     }
 }

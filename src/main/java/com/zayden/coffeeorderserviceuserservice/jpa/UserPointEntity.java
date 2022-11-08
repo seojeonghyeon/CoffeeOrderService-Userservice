@@ -21,4 +21,11 @@ public class UserPointEntity {
     private Integer amount;
 
     private LocalDateTime createAt;
+
+    public boolean payCancel(Integer amount){
+        if(this.amount < amount){
+            throw new IllegalStateException("가지고 계신 포인트가 결제하신 포인트 보다 적어 취소가 불가능합니다.");
+        }
+        return true;
+    }
 }
